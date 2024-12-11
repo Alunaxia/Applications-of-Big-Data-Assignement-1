@@ -25,7 +25,7 @@ jobs:
         run: |
           mvn clean verify sonar:sonar \
             -Dsonar.projectKey=Applications-of-Big-Data-Assignement-1 \
-            -Dsonar.organization=Alunaxia \
+            -Dsonar.organization=alunaxia \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         working-directory: simple-api
