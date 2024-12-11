@@ -30,8 +30,8 @@ jobs:
             -Dsonar.organization=Alunaxia \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-            --file ./simple-api/pom.xml  # Corrected the path here
-        working-directory: ./simple-api  # Ensured this is correct
+            --file simple-api/pom.xml  # Corrected path to pom.xml, no need for extra cd command
+        working-directory: .  # Running from the root directory
 
   build-and-push-docker-image:
     needs: test-backend  # This job will only run if test-backend passes
