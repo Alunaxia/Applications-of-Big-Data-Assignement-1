@@ -1,4 +1,5 @@
 name: CI devops 2024
+
 on:
   # Trigger on push to main branch
   push:
@@ -7,11 +8,12 @@ on:
     branches: [main]
 
 jobs:
-  test-backend: 
+  test-backend:
     runs-on: ubuntu-22.04
     steps:
       # Checkout the repository code
-      - uses: actions/checkout@v2.5.0
+      - name: Checkout code
+        uses: actions/checkout@v2.5.0
 
       # Set up JDK 17
       - name: Set up JDK 17
@@ -28,7 +30,6 @@ jobs:
   build-and-push-docker-image:
     needs: test-backend  # Ensure this job runs only after the test-backend job completes successfully
     runs-on: ubuntu-22.04
-
     steps:
       # Checkout the repository code
       - name: Checkout code
@@ -41,16 +42,16 @@ jobs:
           context: ./simple-api
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
 
-      # Build and push database image (add your Dockerfile and context for the database)
+      # Build and push database image
       - name: Build image and push database
         uses: docker/build-push-action@v3
         with:
-          context: ./database  # Change this to the correct path to the database Dockerfile
+          context: ./database  # Adjust this to the correct directory for your database Dockerfile
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
 
-      # Build and push httpd image (add your Dockerfile and context for httpd)
+      # Build and push httpd image
       - name: Build image and push httpd
         uses: docker/build-push-action@v3
         with:
-          context: ./httpd  # Change this to the correct path to the httpd Dockerfile
+          context: ./httpd  # Adjust this to the correct directory for your httpd Dockerfile
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
