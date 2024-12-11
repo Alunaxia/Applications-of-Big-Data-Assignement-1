@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  test-backend: 
+  test-backend:
     runs-on: ubuntu-22.04
     steps:
       # Checkout the repository code
@@ -37,19 +37,22 @@ jobs:
       - name: Build image and push backend
         uses: docker/build-push-action@v3
         with:
-          context: ./simple-api
+          context: ./simple-api  # The directory containing Dockerfile for the backend
+          file: ./simple-api/Dockerfile  # Specify the Dockerfile location
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest  # Correct tag format
 
       # Build and push database image
       - name: Build image and push database
         uses: docker/build-push-action@v3
         with:
-          context: ./database  # Adjust the directory for your database Dockerfile
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
+          context: ./database  # The directory containing Dockerfile for the database
+          file: ./database/Dockerfile  # Specify the Dockerfile location
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest  # Correct tag format
 
-      # Build and push httpd image
+      # Build and push httpd image (you need to have a Dockerfile for httpd)
       - name: Build image and push httpd
         uses: docker/build-push-action@v3
         with:
-          context: ./httpd  # Adjust the directory for your httpd Dockerfile
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
+          context: ./httpd  # Adjust if you have another directory for httpd Dockerfile
+          file: ./httpd/Dockerfile  # Specify the Dockerfile location
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest  # Correct tag format
