@@ -1,4 +1,31 @@
-build-and-push-docker-image:
+name: CI devops 2024
+on:
+  # Trigger on push to main branch
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-22.04
+    steps:
+      # Checkout the repository code
+      - uses: actions/checkout@v2.5.0
+
+      # Set up JDK 17
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Build and test with Maven
+      - name: Build and test with Maven
+        run: mvn clean verify
+        working-directory: simple-api  # Adjust the directory where your pom.xml is located
+
+  build-and-push-docker-image:
   needs: test-backend  # This job will only run if test-backend passes
   runs-on: ubuntu-22.04
   steps:
