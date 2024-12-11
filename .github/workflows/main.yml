@@ -27,7 +27,7 @@ jobs:
         run: |
           mvn clean verify sonar:sonar \
             -Dsonar.projectKey=Applications-of-Big-Data-Assignement-1 \
-            -Dsonar.organization=Alunaxia \
+            -Dsonar.organization=alunaxia \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
             --file simple-api/pom.xml  # Corrected path to pom.xml, no need for extra cd command
