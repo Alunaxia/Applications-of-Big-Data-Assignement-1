@@ -8,31 +8,25 @@ on:
     branches: [main]
 
 jobs:
-  # Job for testing the backend
   test-backend:
     runs-on: ubuntu-22.04
     steps:
-      # Checkout the repository code
-      - uses: actions/checkout@v2.5.0  
+      - uses: actions/checkout@v2.5.0
 
       # Set up JDK 17
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'temurin'  # Set the JDK version to 17 (Temurin)
+          distribution: 'temurin'
 
       # Build and test with Maven, including SonarCloud analysis
       - name: Build and test with Maven and SonarCloud
         run: mvn -B verify sonar:sonar \
-              -Dsonar.projectKey=devops-2024 \
-              -Dsonar.organization=devops-school \
-              -Dsonar.host.url=https://sonarcloud.io \
               -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
               --file ./simple-api/pom.xml
-        working-directory: simple-api  # Adjust this if your pom.xml is in a different directory
+        working-directory: simple-api
 
-  # Job for building and pushing Docker images
   build-and-push-docker-image:
     needs: test-backend  # This job will only run if test-backend passes
     runs-on: ubuntu-22.04
@@ -41,33 +35,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2.5.0
 
-      # Log in to DockerHub
-      - name: Login to DockerHub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-
-      # Build and push the backend Docker image
+      # Build and push backend image
       - name: Build image and push backend
         uses: docker/build-push-action@v3
         with:
-          context: ./simple-api  # Directory containing the backend Dockerfile
-          file: ./simple-api/Dockerfile  # Path to the backend Dockerfile
-          tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops-simple-api:latest  # Correct tag format
-          push: ${{ github.ref == 'refs/heads/main' }}  # Only push on the main branch
+          context: ./simple-api
+          file: ./simple-api/Dockerfile
+          tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops-simple-api:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
 
-      # Build and push the database Docker image
+      # Build and push database image
       - name: Build image and push database
         uses: docker/build-push-action@v3
         with:
-          context: ./database  # Directory containing the database Dockerfile
-          file: ./database/Dockerfile  # Path to the database Dockerfile
-          tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops-database:latest  # Correct tag format
-          push: ${{ github.ref == 'refs/heads/main' }}  # Only push on the main branch
+          context: ./database
+          file: ./database/Dockerfile
+          tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops-database:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
 
-      # Build and push the HTTP server Docker image
-      - name: Build image and push http-server
+      # Build and push httpd image
+      - name: Build image and push httpd
         uses: docker/build-push-action@v3
         with:
-          context: ./http-server  # Directory containing the http-server Dockerfile
-          file: ./http-server/Dockerfile  # Path to the http-server Dockerfile
-          tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops-http-server:latest  # Correct tag format
-          push: ${{ github.ref == 'refs/heads/main' }}  # Only push on the main branch
+          context: ./http-server
+          file: ./http-server/Dockerfile
+          tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops-httpd:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
+
+      # Login to DockerHub
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
