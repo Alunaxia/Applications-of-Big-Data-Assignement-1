@@ -20,6 +20,10 @@ jobs:
           java-version: '17'  # JDK version
           distribution: 'temurin'  # JDK distribution, you can use 'temurin' or 'zulu'
 
+      # Change directory to where the pom.xml is located (if needed)
+      - name: Change directory to simple-api
+        run: cd simple-api
+
       # Build and test with Maven
       - name: Build and test with Maven
-        run: mvn clean verify  # Customize this if needed
+        run: mvn clean verify
