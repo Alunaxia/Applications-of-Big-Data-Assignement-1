@@ -33,6 +33,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2.5.0
 
+      # Log in to DockerHub
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
       # Build and push the backend Docker image
       - name: Build image and push backend
         uses: docker/build-push-action@v3
@@ -40,6 +44,7 @@ jobs:
           context: ./simple-api  # Directory containing the backend Dockerfile
           file: ./simple-api/Dockerfile  # Path to the backend Dockerfile
           tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops-simple-api:latest  # Correct tag format
+          push: ${{ github.ref == 'refs/heads/main' }}  # Only push on the main branch
 
       # Build and push the database Docker image
       - name: Build image and push database
@@ -48,6 +53,7 @@ jobs:
           context: ./database  # Directory containing the database Dockerfile
           file: ./database/Dockerfile  # Path to the database Dockerfile
           tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops-database:latest  # Correct tag format
+          push: ${{ github.ref == 'refs/heads/main' }}  # Only push on the main branch
 
       # Build and push the HTTP server Docker image
       - name: Build image and push http-server
@@ -56,3 +62,4 @@ jobs:
           context: ./http-server  # Directory containing the http-server Dockerfile
           file: ./http-server/Dockerfile  # Path to the http-server Dockerfile
           tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops-http-server:latest  # Correct tag format
+          push: ${{ github.ref == 'refs/heads/main' }}  # Only push on the main branch
