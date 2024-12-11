@@ -10,15 +10,20 @@ jobs:
   test-backend: 
     runs-on: ubuntu-22.04
     steps:
+      # Checkout the repository code
       - uses: actions/checkout@v2.5.0
+
+      # Set up JDK 17
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      # Build and test with Maven
       - name: Build and test with Maven
         run: mvn clean verify
-        working-directory: simple-api  # Adjust the directory to where your pom.xml is located
+        working-directory: simple-api  # Adjust the directory where your pom.xml is located
 
   build-and-push-docker-image:
     needs: test-backend  # This job will only run if test-backend passes
@@ -33,18 +38,18 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./simple-api
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest  # Fix tag format
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest  # Correct tag format
 
       # Build and push database image
       - name: Build image and push database
         uses: docker/build-push-action@v3
         with:
-          context: ./database  # Adjust this to the correct directory for your database Dockerfile
+          context: ./database  # Adjust the directory for your database Dockerfile
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
 
       # Build and push httpd image
       - name: Build image and push httpd
         uses: docker/build-push-action@v3
         with:
-          context: ./httpd  # Adjust this to the correct directory for your httpd Dockerfile
+          context: ./httpd  # Adjust the directory for your httpd Dockerfile
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
