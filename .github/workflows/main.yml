@@ -24,3 +24,33 @@ jobs:
       - name: Build and test with Maven
         run: mvn clean verify
         working-directory: simple-api  # Set the correct directory where the pom.xml is located
+
+  build-and-push-docker-image:
+    needs: test-backend  # Ensure this job runs only after the test-backend job completes successfully
+    runs-on: ubuntu-22.04
+
+    steps:
+      # Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v2.5.0
+
+      # Build and push backend image
+      - name: Build image and push backend
+        uses: docker/build-push-action@v3
+        with:
+          context: ./simple-api
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
+
+      # Build and push database image (add your Dockerfile and context for the database)
+      - name: Build image and push database
+        uses: docker/build-push-action@v3
+        with:
+          context: ./database  # Change this to the correct path to the database Dockerfile
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
+
+      # Build and push httpd image (add your Dockerfile and context for httpd)
+      - name: Build image and push httpd
+        uses: docker/build-push-action@v3
+        with:
+          context: ./httpd  # Change this to the correct path to the httpd Dockerfile
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
