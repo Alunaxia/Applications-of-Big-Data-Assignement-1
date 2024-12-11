@@ -23,6 +23,9 @@ jobs:
       # Build and test with Maven, including SonarCloud analysis
       - name: Build and test with Maven and SonarCloud
         run: mvn -B verify sonar:sonar \
+              -Dsonar.projectKey=devops-2024 \
+              -Dsonar.organization=Alunaxia \
+              -Dsonar.host.url=https://sonarcloud.io \
               -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
               --file ./simple-api/pom.xml
         working-directory: simple-api
@@ -65,4 +68,3 @@ jobs:
       # Login to DockerHub
       - name: Login to DockerHub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-
