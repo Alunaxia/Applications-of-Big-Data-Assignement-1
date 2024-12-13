@@ -1,0 +1,6 @@
+# ~/my-project/roles/docker/handlers/main.yml
+---
+- name: Start Docker service
+  service:
+    name: docker
+    state: started

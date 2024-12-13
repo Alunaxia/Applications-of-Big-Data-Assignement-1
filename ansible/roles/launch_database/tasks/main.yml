@@ -1,0 +1,17 @@
+---
+# launch_database/tasks/main.yml
+
+- name: Run PostgreSQL container
+  docker_container:
+    name: postgres-container
+    image: postgres:16-alpine
+    env:
+      POSTGRES_DB: db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pwd
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
+    restart_policy: always
+    state: started
+    ports:
+      - "5432:5432"

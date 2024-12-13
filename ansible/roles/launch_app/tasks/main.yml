@@ -1,0 +1,8 @@
+- name: Run Simple API container
+  docker_container:
+    name: simple-api-container
+    image: alunaxia/tp-devops-simple-api
+    ports:
+      - "8080:8080"  # Expose the container's port to the host
+    restart_policy: always
+    state: started
